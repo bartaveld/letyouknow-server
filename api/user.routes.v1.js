@@ -24,7 +24,12 @@ routes.get('/users', function(req, res) {
 // Vorm van de URL: http://hostname:3000/api/v1/users/23
 //
 routes.get('/users/:id', function(req, res) {
-
+    res.contentType('application/json');
+    User.findById(req.params.id)
+        .then((user) => {
+            res.status(200).json(user);
+        })
+        .catch((error) => res.status(401).json(error));
 });
 
 //

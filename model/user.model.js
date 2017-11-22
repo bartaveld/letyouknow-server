@@ -10,9 +10,19 @@ const UserSchema = new Schema({
 
 const User = mongoose.model('user', UserSchema);
 
-// Add a 'dummy' user (every time you require this file!)
+// Add a 'dummy' user if one doesnt exist
 const user = new User({
     name: 'Joe',
-}).save();
+});
+
+User.findOne({ name: 'Joe' })
+    .then((userFound) => {
+        if(userFound === null){
+            user.save();
+        }   
+    })
+    .catch((error) => {
+        console.log(error);
+    })
 
 module.exports = User;

@@ -41,8 +41,8 @@ app.use(bodyParser.json({
 // }));
 
 // configureer de app
-app.set('port', (process.env.PORT | config.env.webPort));
-app.set('env', (process.env.ENV | 'development'))
+app.set('port', (process.env.PORT || config.env.webPort));
+app.set('env', (process.env.ENV || 'development'))
 
 // wanneer je je settings wilt controleren
 // console.dir(config);
