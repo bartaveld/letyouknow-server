@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "node node_modules/mocha/bin/_mocha ./test/*test.js --reporter spec",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "start-prod": "./start-prod.sh"
   },
   "repository": {
     "type": "git",

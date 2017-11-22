@@ -37,7 +37,20 @@ routes.get('/users/:id', function(req, res) {
 // Vorm van de URL: POST http://hostname:3000/api/v1/users
 //
 routes.post('/users', function(req, res) {
-
+    res.contentType('application/json');
+    if(req.body.name != null){
+        const newUser = new User({
+            name: req.body.name
+        }).save()
+            .then((savedUser) => {
+                res.status(200).json(savedUser);
+            })
+            .catch((error) => {
+                res.status(401).json(error);
+            })
+    } else {
+        res.status(400).json({ message: "Please provide a name in the post body"});
+    }
 });
 
 //
@@ -48,7 +61,12 @@ routes.post('/users', function(req, res) {
 // Vorm van de URL: PUT http://hostname:3000/api/v1/users/23
 //
 routes.put('/users/:id', function(req, res) {
-
+    res.contentType('application/json');
+    User.findById(req.params.id)
+    .then((user) => {
+        console.log(user);
+    })
+    .catch((error) => res.status(401).json(error));
 });
 
 //
