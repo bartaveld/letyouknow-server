@@ -32,6 +32,30 @@ routes.post('/follow', function(req,res) {
     })
 });
 
+routes.delete('/follow', function(req,res) {
+    res.contentType('application/json');
+    const token = req.headers.authtoken;
+    jwt.verify(token, JWTKey, (err, decoded) => {
+        if(err){
+            res.status(401).json(err);
+        } else {
+            const username = decoded.user
+            const userToUnfollow = req.body.user;
+            neo4j.cypher({
+                query: 'MATCH( :User{username: $username })-[r:follows]->( :User{username: $userToUnfollow} )'
+                + 'DELETE r',
+                params: { username: username, userToUnfollow: userToUnfollow }
+            }, function (err, result) {
+                if(err){
+                    res.status(400).json(err);
+                } else {
+                    res.status(200).json({message: 'unfollowing ' + userToUnfollow + ' was a success'});
+                }
+            });
+        }
+    })
+});
+
 //Returns all usernames of people you may want to follow
 routes.get('/follow/suggestions', function(req,res) {
     res.contentType('application/json');
