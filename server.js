@@ -1,12 +1,14 @@
 //
 // server.js
 //
+require('dotenv').config();
 var http = require('http');
 var express = require('express');
 var bodyParser = require('body-parser')
 var logger = require('morgan');
 var mongodb = require('./config/mongo.db');
-var userroutes_v1 = require('./api/user.routes.v1');
+var loginroutes_v1 = require('./api/login/routes.v1');
+var followroutes_v1 = require('./api/follow/routes.v1');
 // var auth_routes_v1 = require('./api/authentication.routes.v1');
 var config = require('./config/env/env');
 // var expressJWT = require('express-jwt');
@@ -68,7 +70,8 @@ app.use(function (req, res, next) {
 
 // Installeer de routers
 // app.use('/api/v1', auth_routes_v1);
-app.use('/api/v1', userroutes_v1);
+app.use('/api/v1/', loginroutes_v1);
+app.use('/api/v1/', followroutes_v1);
 
 // Errorhandler voor express-jwt errors
 // Wordt uitgevoerd wanneer err != null; anders door naar next().
