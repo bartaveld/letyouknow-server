@@ -124,10 +124,10 @@ routes.post('/post', function(req, res) {
     
 });
 
-routes.put('/post', function(req, res) {
+routes.put('/post/:id', function(req, res) {
     res.contentType('application/json');
 
-    id = req.query.id;
+    id = req.params.id;
     const token = req.headers.authtoken;
 
     jwt.verify(token, JWTKey, (err, decoded) => {
@@ -155,10 +155,10 @@ routes.put('/post', function(req, res) {
     });
 });
 
-routes.delete('/post', function(req, res) {
+routes.delete('/post/:id', function(req, res) {
     res.contentType('application/json');
 
-    id = req.query.id;
+    id = req.params.id;
     const token = req.headers.authtoken;
 
     jwt.verify(token, JWTKey, (err, decoded) => {

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const CommentSchema = require('./coment.model');
 
 const PostSchema = new Schema({
     user: {
@@ -14,7 +15,8 @@ const PostSchema = new Schema({
         type: String,
         required: true
     },
-    imagePath: String
+    imagePath: String,
+    comments: [ CommentSchema ]
 }, {
     timestamps: true
 });

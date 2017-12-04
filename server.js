@@ -11,6 +11,7 @@ var loginroutes_v1 = require('./api/login/routes.v1');
 var followroutes_v1 = require('./api/follow/routes.v1');
 var postroutes_v1 = require('./api/post/routes.v1');
 var userroutes_v1 = require('./api/user/routes.v1');
+var commentroutes_v1 = require('./api/post/comment/routes.v1');
 // var auth_routes_v1 = require('./api/authentication.routes.v1');
 var config = require('./config/env/env');
 // var expressJWT = require('express-jwt');
@@ -76,6 +77,7 @@ app.use('/api/v1/', loginroutes_v1);
 app.use('/api/v1/', followroutes_v1);
 app.use('/api/v1/', postroutes_v1);
 app.use('/api/v1/', userroutes_v1);
+app.use('/api/v1/', commentroutes_v1);
 
 // Errorhandler voor express-jwt errors
 // Wordt uitgevoerd wanneer err != null; anders door naar next().
