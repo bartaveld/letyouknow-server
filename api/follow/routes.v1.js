@@ -91,7 +91,7 @@ routes.get('/follow/suggestions', function(req,res) {
     });    
 });
 
-//Returns all usernames of people you may want to follow
+//Mark a user as not interesting
 routes.post('/follow/not-interested', function(req,res) {
     res.contentType('application/json');
     const token = req.headers.authtoken;
