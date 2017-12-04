@@ -1,6 +1,3 @@
-//
-// ./api/v1/user.routes.v1.js
-//
 var express = require('express');
 var routes = express.Router();
 var neo4j = require('../../config/neo4j.db');
@@ -23,10 +20,14 @@ routes.post('/login', function( req, res ) {
         if(err){
             res.status(400).json( err );
         } else {
-            if( bcrypt.compareSync( password, result[0].user.properties.password ) ){
-                //Make env variable
-                const token = jwt.sign({ user: username }, JWTKey, { expiresIn: '2h' });
-                res.status(200).json( { login: 'success', token: token } );
+            if(result[0] != undefined){
+                if( bcrypt.compareSync( password, result[0].user.properties.password ) ){
+                    //Make env variable
+                    const token = jwt.sign({ user: username }, JWTKey, { expiresIn: '2h' });
+                    res.status(200).json( { login: 'success', token: token } );
+                } else {
+                    res.status(401).json( { login: 'failed' })
+                }
             } else {
                 res.status(401).json( { login: 'failed' })
             }
