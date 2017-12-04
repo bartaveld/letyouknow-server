@@ -22,25 +22,32 @@ function sortArray(array) {
 routes.get('/post', function (req, res) {
     res.contentType('application/json');
     
+    const token = req.headers.authtoken;
     username = req.query.username;
     
-    if(username){
-        Post.find({ user: username })
-        .then((posts) => {
-            res.status(200).json(sortArray(posts));
-        })
-        .catch((error) => {
-            res.status(400).json(error);
-        });
-    } else {
-        Post.find({})
-            .then((posts) => {
-                res.status(200).json(sortArray(posts));
-            })
-            .catch((error) => {
-                res.status(400).json(error);
-            });
-    }
+    jwt.verify(token, JWTKey, (err, decoded) => {
+        if(err){
+            res.status(401).json(err)
+        } else {
+            if(username){
+                Post.find({ user: username })
+                .then((posts) => {
+                    res.status(200).json(sortArray(posts));
+                })
+                .catch((error) => {
+                    res.status(400).json(error);
+                });
+            } else {
+                Post.find({})
+                    .then((posts) => {
+                        res.status(200).json(sortArray(posts));
+                    })
+                    .catch((error) => {
+                        res.status(400).json(error);
+                    });
+            }
+        }
+    });
 });
 
 //Get all posts from people you follow with the most recent on top
@@ -92,6 +99,89 @@ routes.get('/post/followers', function(req,res) {
             });
         }
     });    
+});
+
+routes.post('/post', function(req, res) {
+    res.contentType('application/json');
+    const token = req.headers.authtoken;
+    jwt.verify(token, JWTKey, (err, decoded) => {
+        if(err){
+            res.status(401).json(err);
+        } else {
+            let body = req.body;
+            body.user = decoded.user;
+
+            const post = new Post(body);
+        
+            post.save()
+                .then(() => {
+                    res.status(200).json(post);
+                }).catch((error) => {
+                    res.status(400).json(error);
+                });
+        }
+    });
+    
+});
+
+routes.put('/post', function(req, res) {
+    res.contentType('application/json');
+
+    id = req.query.id;
+    const token = req.headers.authtoken;
+
+    jwt.verify(token, JWTKey, (err, decoded) => {
+        if(err){
+            res.status(401).json(err);
+        } else {
+            Post.findById(id)
+                .then((post) => {
+                    if(post.user === decoded.user){
+                        post.title = req.body.title;
+                        post.message = req.body.message;
+                        post.save()
+                            .then((post) => {
+                                res.status(200).json(post);
+                            }).catch((err) => {
+                                res.status(400).json(err);
+                            })
+                    } else {
+                        res.status(401).json({message : 'Not your post'})
+                    }
+                }).catch((err) => {
+                    res.status(400).json(err);
+                })
+        }
+    });
+});
+
+routes.delete('/post', function(req, res) {
+    res.contentType('application/json');
+
+    id = req.query.id;
+    const token = req.headers.authtoken;
+
+    jwt.verify(token, JWTKey, (err, decoded) => {
+        if(err){
+            res.status(401).json(err);
+        } else {
+            Post.findById(id)
+                .then((post) => {
+                    if(post.user === decoded.user){
+                        post.remove()
+                            .then((post) => {
+                                res.status(200).json(post);
+                            }).catch((err) => {
+                                res.status(400).json(err);
+                            })
+                    } else {
+                        res.status(401).json({message : 'Not your post'})
+                    }
+                }).catch((err) => {
+                    res.status(400).json(err);
+                })
+        }
+    });
 });
 
 
