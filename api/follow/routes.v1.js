@@ -32,6 +32,8 @@ routes.post('/follow', function(req,res) {
     })
 });
 
+
+//Lets you unfollow a user
 routes.delete('/follow', function(req,res) {
     res.contentType('application/json');
     const token = req.headers.authtoken;
@@ -111,6 +113,37 @@ routes.post('/follow/not-interested', function(req,res) {
                 } else {
                     console.log(result);
                     res.status(200).json({message: userNotInterestedIn + ' is marked as not interesting'});
+                }
+            });
+        }
+    });    
+});
+
+//Returns all users that you follow
+routes.get('/follow/list', function(req,res) {
+    res.contentType('application/json');
+    const token = req.headers.authtoken;
+    jwt.verify(token, JWTKey, (err, decoded) => {
+        const username = decoded.user;
+        if(err){
+            res.status(401).json(err);
+        } else {
+            neo4j.cypher({
+                query: 'MATCH(user :User{username: $username })'
+                + 'MATCH(user)-[:follows]->(youFollow)'
+                + 'RETURN youFollow.username AS name',
+                params: { username: username }
+            }, function (err, result) {
+                if(err){
+                    res.status(400).json(err);
+                } else {
+                    const userList = [];
+                    result.forEach(user => {
+                        if(user.name != username){
+                            userList.push(user.name)
+                        }
+                    });
+                    res.status(200).json(userList);
                 }
             });
         }
