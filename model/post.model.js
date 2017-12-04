@@ -2,9 +2,19 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
-    user: String,
-    title: String,
-    message: String
+    user: {
+        type: String,
+        required: true
+    },
+    title: {
+        type: String,
+        required: true
+    },
+    message: {
+        type: String,
+        required: true
+    },
+    imagePath: String
 }, {
     timestamps: true
 });
