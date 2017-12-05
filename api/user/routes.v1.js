@@ -13,20 +13,44 @@ const JWTKey = process.env.JWTKEY;
 //Get all users
 routes.get('/user', function( req, res ) {
     res.contentType('application/json');
+    const token = req.headers.authtoken;
+    const username = req.query.username;
 
-    neo4j.cypher({
-        query: 'MATCH (user : User) RETURN user'
-    }, function ( err, result ) {
+    jwt.verify(token, JWTKey, (err, decoded) => {
         if(err){
-            res.status(400).json( err );
+            res.status(400).json(err);
         } else {
-            const userList = []
-            result.forEach(element => {
-                user = element.user.properties;
-                delete user.password;
-                userList.push(user);
-            });
-            res.status(200).json(userList);
+
+            if(username){
+                neo4j.cypher({
+                    query: 'MATCH (user :User { username: $username }) RETURN user',
+                    params: { username: username }
+                }, function ( err, result ) {
+                    if(err){
+                        res.status(400).json( err );
+                    } else {
+                        user = result[0].user.properties;
+                        delete user.password;
+                        res.status(200).json(user);
+                    }
+                });
+            } else {
+                neo4j.cypher({
+                    query: 'MATCH (user : User) RETURN user'
+                }, function ( err, result ) {
+                    if(err){
+                        res.status(400).json( err );
+                    } else {
+                        const userList = []
+                        result.forEach(element => {
+                            user = element.user.properties;
+                            delete user.password;
+                            userList.push(user);
+                        });
+                        res.status(200).json(userList);
+                    }
+                });
+            }
         }
     });
 });
@@ -38,6 +62,8 @@ routes.post('/user', function(req,res) {
     if(validator.validate(req.body, User).valid){
         const username = req.body.username;
         const password = bcrypt.hashSync( req.body.password, saltRounds );
+        const firstName = req.body.firstName;
+        const lastName = req.body.lastName;
     
         let usernameCheck;
         neo4j.cypher({
@@ -53,8 +79,9 @@ routes.post('/user', function(req,res) {
                     res.status(400).json({message: username + ' already exists'});
                 } else {
                     neo4j.cypher({
-                        query: 'CREATE (user : User {username: $username, password: $password}) RETURN user',
-                        params: { username: username, password: password }
+                        query: 'CREATE (user : User {username: $username, password: $password, firstName: $firstName, lastName: $lastName})' 
+                        + 'RETURN user',
+                        params: { username: username, password: password, firstName: firstName, lastName: lastName }
                     }, function (err, result) {
                         if(err){
                             res.status(400).json(err);
@@ -69,6 +96,69 @@ routes.post('/user', function(req,res) {
         res.status(400).json({ message : "body is not a valid user"})
     }
 
+});
+
+//Lets you update a user
+routes.put('/user', function(req,res) {
+    res.contentType('application/json');
+    const token = req.headers.authtoken;
+    jwt.verify(token, JWTKey, (err, decoded) => {
+        if(err){
+            res.status(400).json(err);
+        } else {
+            const username = decoded.user;
+            const firstName = req.body.firstName;
+            const lastName = req.body.lastName;
+
+            const mockUser = {
+                username: 'mock',
+                password: 'mock',
+                firstName: firstName,
+                lastName: lastName
+            }
+        
+            if(validator.validate(mockUser, User).valid){
+                neo4j.cypher({
+                    query: 'MATCH (user :User {username: $username})'
+                    + 'SET user.firstName = $firstName, user.lastName = $lastName',
+                    params: { username: username, firstName: firstName, lastName: lastName }
+                }, function (err, result) {
+                    if(err){
+                        res.status(400).json(err);
+                    } else {
+                        res.status(200).json({ message: username + ' was updated'});
+                    }
+                });
+            } else {
+                res.status(400).json({ message : "body is not a valid user"})
+            }
+        }
+    });
+});
+
+//Lets you delete your user
+routes.delete('/user', function(req,res) {
+    res.contentType('application/json');
+    const token = req.headers.authtoken;
+    jwt.verify(token, JWTKey, (err, decoded) => {
+        if(err){
+            res.status(400).json(err);
+        } else {
+            const username = decoded.user;
+        
+                neo4j.cypher({
+                    query: 'MATCH (user :User {username: $username})'
+                    + 'DETACH DELETE user',
+                    params: { username: username }
+                }, function (err, result) {
+                    if(err){
+                        res.status(400).json(err);
+                    } else {
+                        res.status(200).json({ message: username + ' was deleted'});
+                    }
+                });
+        }
+    });
 });
 
 //Returns all usernames of people you may want to follow

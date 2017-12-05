@@ -6,9 +6,18 @@ var userSchema = {
         },
         "password" : {
             "type" : "string"
+        },
+        "firstName" : {
+            "type" : "string",
+        },
+        "lastName" : {
+            "type" : "string"
+        },
+        "imagePath" : {
+            "type" : "string"
         }
     }, 
-    "required" : ["username", "password"]
+    "required" : ["username", "password", "firstName", "lastName"]
 }
 
 module.exports = userSchema;
