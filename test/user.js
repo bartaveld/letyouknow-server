@@ -1,3 +1,4 @@
+require('dotenv').config();
 process.env.NODE_ENV = 'test';
 
 const neo4j = require('../config/neo4j.db');
