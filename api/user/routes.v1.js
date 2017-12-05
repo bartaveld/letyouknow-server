@@ -225,4 +225,30 @@ routes.get('/users/followers', function(req,res) {
     });    
 });
 
+//Returns all users that follow you
+routes.get('/users/:username', function(req,res) {
+    res.contentType('application/json');
+    const token = req.headers.authtoken;
+    jwt.verify(token, JWTKey, (err, decoded) => {
+        const username = req.params.username;
+        if(err){
+            res.status(401).json(err);
+        } else {
+            neo4j.cypher({
+                query: 'MATCH(user :User{username: $username })'
+                + 'RETURN user',
+                params: { username: username }
+            }, function (err, result) {
+                if(err){
+                    res.status(400).json(err);
+                } else {
+                    user = result[0].user;
+                    delete user.password;
+                    res.status(200).json(user);
+                }
+            });
+        }
+    });    
+});
+
 module.exports = routes;

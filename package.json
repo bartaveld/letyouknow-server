@@ -1,16 +1,12 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "Node server met API naar mongodb database",
+  "description": "LetYouKnow server",
   "main": "server.js",
   "scripts": {
-    "test": "node node_modules/mocha/bin/_mocha ./test/*test.js --reporter spec",
+    "test": "nodemon node_modules/mocha/bin/_mocha",
     "start": "nodemon server.js",
     "start-prod": "./start-prod.sh"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/avansbreda.git"
   },
   "keywords": [
     "node",
@@ -18,12 +14,8 @@
     "mongoose",
     "server"
   ],
-  "author": "Avans Informatica Breda",
+  "author": "bartaveld",
   "license": "ISC",
-  "homepage": "https://github.com/avansbreda#readme",
-  "bugs": {
-    "url": "https://github.com/avansbreda/issues"
-  },
   "dependencies": {
     "bcrypt": "^1.0.3",
     "body-parser": "^1.17.2",
@@ -45,6 +37,7 @@
     "gulp-istanbul": "^1.1.2",
     "gulp-mocha": "^4.3.1",
     "mocha": "^3.3.0",
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.11.0",
+    "should": "^13.1.3"
   }
 }
