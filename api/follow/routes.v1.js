@@ -88,7 +88,7 @@ routes.post('/not-interested', function(req,res) {
 });
 
 //Returns all users that you follow
-routes.get('/followers/list', function(req,res) {
+routes.get('/followers', function(req,res) {
     res.contentType('application/json');
     const token = req.headers.authtoken;
     jwt.verify(token, JWTKey, (err, decoded) => {
