@@ -19,9 +19,31 @@ function sortArray(array) {
 
 //Get all posts with most recent on top
 //Also possible to get posts from one user
-routes.post('/post/:id/comment', function (req, res) {
+routes.post('/posts/:id/comments', function (req, res) {
     res.contentType('application/json');
-    id = req.params.id; 
+    id = req.params.id;
+    const token = req.headers.authtoken; 
+
+    jwt.verify(token, JWTKey, (err, decoded) => {
+        if(err){
+            res.status(401).json(err);
+        } else {
+            Post.findById(id)
+                .then((post) => {
+                    post.comments.push({
+                        user: decoded.user,
+                        message: req.body.message
+                    });
+                    return post.save()
+                })
+                .then(() => {
+                    res.status(201).json({message: 'comment made!'})
+                })
+                .catch((err) =>{
+                    res.status(400).json(err);
+                })
+        }
+    });
 
     
     // const token = req.headers.authtoken;

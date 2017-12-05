@@ -11,7 +11,7 @@ const saltRounds = Number(process.env.SALT);
 const JWTKey = process.env.JWTKEY;
 
 //Get all users
-routes.get('/user', function( req, res ) {
+routes.get('/users', function( req, res ) {
     res.contentType('application/json');
     const token = req.headers.authtoken;
     const username = req.query.username;
@@ -56,7 +56,7 @@ routes.get('/user', function( req, res ) {
 });
 
 //Lets you register
-routes.post('/user', function(req,res) {
+routes.post('/users', function(req,res) {
     res.contentType('application/json');
     
     if(validator.validate(req.body, User).valid){
@@ -99,7 +99,7 @@ routes.post('/user', function(req,res) {
 });
 
 //Lets you update a user
-routes.put('/user', function(req,res) {
+routes.put('/users', function(req,res) {
     res.contentType('application/json');
     const token = req.headers.authtoken;
     jwt.verify(token, JWTKey, (err, decoded) => {
@@ -137,7 +137,7 @@ routes.put('/user', function(req,res) {
 });
 
 //Lets you delete your user
-routes.delete('/user', function(req,res) {
+routes.delete('/users', function(req,res) {
     res.contentType('application/json');
     const token = req.headers.authtoken;
     jwt.verify(token, JWTKey, (err, decoded) => {
@@ -162,7 +162,7 @@ routes.delete('/user', function(req,res) {
 });
 
 //Returns all usernames of people you may want to follow
-routes.get('/user/suggestion', function(req,res) {
+routes.get('/users/suggestions', function(req,res) {
     res.contentType('application/json');
     const token = req.headers.authtoken;
     jwt.verify(token, JWTKey, (err, decoded) => {
@@ -195,7 +195,7 @@ routes.get('/user/suggestion', function(req,res) {
 });
 
 //Returns all users that follow you
-routes.get('/user/follower', function(req,res) {
+routes.get('/users/followers', function(req,res) {
     res.contentType('application/json');
     const token = req.headers.authtoken;
     jwt.verify(token, JWTKey, (err, decoded) => {

@@ -19,7 +19,7 @@ function sortArray(array) {
 
 //Get all posts with most recent on top
 //Also possible to get posts from one user
-routes.get('/post', function (req, res) {
+routes.get('/posts', function (req, res) {
     res.contentType('application/json');
     
     const token = req.headers.authtoken;
@@ -51,7 +51,7 @@ routes.get('/post', function (req, res) {
 });
 
 //Get all posts from people you follow with the most recent on top
-routes.get('/post/followers', function(req,res) {
+routes.get('/posts/followers', function(req,res) {
     res.contentType('application/json');
     const token = req.headers.authtoken;
     jwt.verify(token, JWTKey, (err, decoded) => {
@@ -101,7 +101,7 @@ routes.get('/post/followers', function(req,res) {
     });    
 });
 
-routes.post('/post', function(req, res) {
+routes.post('/posts', function(req, res) {
     res.contentType('application/json');
     const token = req.headers.authtoken;
     jwt.verify(token, JWTKey, (err, decoded) => {
@@ -124,7 +124,7 @@ routes.post('/post', function(req, res) {
     
 });
 
-routes.put('/post/:id', function(req, res) {
+routes.put('/posts/:id', function(req, res) {
     res.contentType('application/json');
 
     id = req.params.id;
@@ -155,7 +155,7 @@ routes.put('/post/:id', function(req, res) {
     });
 });
 
-routes.delete('/post/:id', function(req, res) {
+routes.delete('/posts/:id', function(req, res) {
     res.contentType('application/json');
 
     id = req.params.id;

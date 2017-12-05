@@ -6,7 +6,7 @@ var jwt = require('jsonwebtoken');
 const JWTKey = process.env.JWTKEY;
 
 //Lets you follow a user
-routes.post('/follow', function(req,res) {
+routes.post('/followers', function(req,res) {
     res.contentType('application/json');
     const token = req.headers.authtoken;
     jwt.verify(token, JWTKey, (err, decoded) => {
@@ -34,7 +34,7 @@ routes.post('/follow', function(req,res) {
 
 
 //Lets you unfollow a user
-routes.delete('/follow', function(req,res) {
+routes.delete('/followers', function(req,res) {
     res.contentType('application/json');
     const token = req.headers.authtoken;
     jwt.verify(token, JWTKey, (err, decoded) => {
@@ -88,7 +88,7 @@ routes.post('/not-interested', function(req,res) {
 });
 
 //Returns all users that you follow
-routes.get('/follow/list', function(req,res) {
+routes.get('/followers/list', function(req,res) {
     res.contentType('application/json');
     const token = req.headers.authtoken;
     jwt.verify(token, JWTKey, (err, decoded) => {
