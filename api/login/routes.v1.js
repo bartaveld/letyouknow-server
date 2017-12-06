@@ -28,7 +28,7 @@ routes.post('/login', function( req, res ) {
                         const user = result[0].user.properties;
                         const token = jwt.sign({ user: username }, JWTKey, { expiresIn: '24h' });
                         res.status(200).json( { login: 'success', token: token, username: username
-                        , firstName: user.firstName, lastName: user.lastName } );
+                        , firstName: user.firstName, lastName: user.lastName, imagePath: user.imagePath } );
                     } else {
                         res.status(401).json( { login: 'failed' })
                     }
