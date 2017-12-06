@@ -64,34 +64,39 @@ routes.post('/users', function(req,res) {
         const password = bcrypt.hashSync( req.body.password, saltRounds );
         const firstName = req.body.firstName;
         const lastName = req.body.lastName;
-    
-        let usernameCheck;
-        neo4j.cypher({
-            query: 'MATCH (user : User {username: $username}) RETURN user',
-            params: { username: username }
-        }, function (err, result) {
-            if(err){
-                res.status(400).json(err);
-            } else {
-                usernameCheck = result[0];
-                
-                if(usernameCheck != undefined){
-                    res.status(400).json({message: username + ' already exists'});
+
+        if(username === '' || password === '' || firstName === '' || lastName === ''){
+            res.status(400).json({message : 'Everything needs to be filled in'});
+        } 
+        else {
+            let usernameCheck;
+            neo4j.cypher({
+                query: 'MATCH (user : User {username: $username}) RETURN user',
+                params: { username: username }
+            }, function (err, result) {
+                if(err){
+                    res.status(400).json(err);
                 } else {
-                    neo4j.cypher({
-                        query: 'CREATE (user : User {username: $username, password: $password, firstName: $firstName, lastName: $lastName})' 
-                        + 'RETURN user',
-                        params: { username: username, password: password, firstName: firstName, lastName: lastName }
-                    }, function (err, result) {
-                        if(err){
-                            res.status(400).json(err);
-                        } else {
-                            res.status(200).json({ message: username + ' was created'});
-                        }
-                    });
+                    usernameCheck = result[0];
+                    if(usernameCheck != undefined){
+                        res.status(400).json({message: username + ' already exists'});
+                    } else {
+                        neo4j.cypher({
+                            query: 'CREATE (user : User {username: $username, password: $password, firstName: $firstName, lastName: $lastName})' 
+                            + 'RETURN user',
+                            params: { username: username, password: password, firstName: firstName, lastName: lastName }
+                        }, function (err, result) {
+                            if(err){
+                                res.status(400).json(err);
+                            } else {
+                                res.status(201).json({ message: username + ' was created'});
+                            }
+                        });
+                    }
                 }
-            }
-        });
+            });
+        }
+    
     } else {
         res.status(400).json({ message : "body is not a valid user"})
     }
