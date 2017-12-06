@@ -242,7 +242,7 @@ routes.get('/users/:username', function(req,res) {
                 if(err){
                     res.status(400).json(err);
                 } else {
-                    user = result[0].user;
+                    user = result[0].user.properties;
                     delete user.password;
                     res.status(200).json(user);
                 }

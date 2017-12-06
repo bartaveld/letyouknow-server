@@ -25,9 +25,10 @@ routes.post('/login', function( req, res ) {
             } else {
                 if(result[0] != undefined){
                     if( bcrypt.compareSync( password, result[0].user.properties.password ) ){
-                        //Make env variable
-                        const token = jwt.sign({ user: username }, JWTKey, { expiresIn: '2h' });
-                        res.status(200).json( { login: 'success', token: token } );
+                        const user = result[0].user.properties;
+                        const token = jwt.sign({ user: username }, JWTKey, { expiresIn: '24h' });
+                        res.status(200).json( { login: 'success', token: token, username: username
+                        , firstName: user.firstName, lastName: user.lastName } );
                     } else {
                         res.status(401).json( { login: 'failed' })
                     }
