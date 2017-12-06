@@ -82,7 +82,7 @@ routes.post('/users', function(req,res) {
                         res.status(400).json({message: username + ' already exists'});
                     } else {
                         neo4j.cypher({
-                            query: 'CREATE (user : User {username: $username, password: $password, firstName: $firstName, lastName: $lastName})' 
+                            query: 'CREATE (user : User {username: $username, password: $password, firstName: $firstName, lastName: $lastName, imagePath: ""})' 
                             + 'RETURN user',
                             params: { username: username, password: password, firstName: firstName, lastName: lastName }
                         }, function (err, result) {
@@ -114,19 +114,21 @@ routes.put('/users', function(req,res) {
             const username = decoded.user;
             const firstName = req.body.firstName;
             const lastName = req.body.lastName;
+            const imagePath = req.body.imagePath;
 
             const mockUser = {
                 username: 'mock',
                 password: 'mock',
                 firstName: firstName,
-                lastName: lastName
+                lastName: lastName,
+                imagePath: imagePath
             }
         
             if(validator.validate(mockUser, User).valid){
                 neo4j.cypher({
                     query: 'MATCH (user :User {username: $username})'
-                    + 'SET user.firstName = $firstName, user.lastName = $lastName',
-                    params: { username: username, firstName: firstName, lastName: lastName }
+                    + 'SET user.firstName = $firstName, user.lastName = $lastName, user.imagePath = $imagePath',
+                    params: { username: username, firstName: firstName, lastName: lastName, imagePath: imagePath }
                 }, function (err, result) {
                     if(err){
                         res.status(400).json(err);
