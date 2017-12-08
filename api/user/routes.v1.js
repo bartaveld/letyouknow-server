@@ -23,15 +23,19 @@ routes.get('/users', function( req, res ) {
 
             if(username){
                 neo4j.cypher({
-                    query: 'MATCH (user :User { username: $username }) RETURN user',
+                    query: 'MATCH (user :User) WHERE user.username CONTAINS $username RETURN user',
                     params: { username: username }
                 }, function ( err, result ) {
                     if(err){
                         res.status(400).json( err );
                     } else {
-                        user = result[0].user.properties;
-                        delete user.password;
-                        res.status(200).json(user);
+                        const userList = []
+                        result.forEach(element => {
+                            user = element.user.properties;
+                            delete user.password;
+                            userList.push(user);
+                        });
+                        res.status(200).json(userList);
                     }
                 });
             } else {

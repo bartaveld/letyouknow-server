@@ -68,33 +68,44 @@ routes.get('/posts/followers', function(req,res) {
                 if(err){
                     res.status(400).json(err);
                 } else {
-                    const userList = [];
-                    result.forEach(user => {
-                        if(user.name != username){
-                            userList.push(user.name)
-                        }
-                    });
-                    let findAllPosts = new Promise((resolve, reject) => {
-                        const postList = [];
-                        const length = userList.length;
-                        let count = 0;
-                        userList.forEach(user => {
-                            Post.find({ user: user })
+                    if(result.length === 0){
+                        res.status(204).json();
+                    }
+                    else {
+                        const userList = [];
+                        result.forEach(user => {
+                            if(user.name != username){
+                                userList.push(user.name)
+                            }
+                        });
+                        let findAllPosts = new Promise((resolve, reject) => {
+                            const postList = [];
+                            const length = userList.length;
+                            let count = 0;
+                            userList.forEach(user => {
+                                Post.find({ user: user })
+                                    .then((posts) => {
+                                        postList.push.apply(postList, posts);
+                                        count++;
+                                        if (count === length){
+                                            resolve(postList);
+                                        }
+                                    })
+                                    .catch((error) => {
+                                        res.status(400).json(error);
+                                    });
+                            });
+                        }).then((postList) => {
+                            Post.find({ user: username })
                                 .then((posts) => {
                                     postList.push.apply(postList, posts);
-                                    count++;
-                                    console.log(count)
-                                    if (count === length){
-                                        resolve(postList);
-                                    }
+                                    res.status(200).json(sortArray(postList));
                                 })
-                                .catch((error) => {
-                                    res.status(400).json(error);
-                                });
+                                .catch((err) => {
+                                    res.status(400).json
+                                })
                         });
-                    }).then((postList) => {
-                        res.status(200).json(sortArray(postList));
-                    });
+                    }
                 }
             });
         }
