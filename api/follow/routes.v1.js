@@ -99,7 +99,7 @@ routes.get('/followers', function(req,res) {
             neo4j.cypher({
                 query: 'MATCH(user :User{username: $username })'
                 + 'MATCH(user)-[:follows]->(youFollow)'
-                + 'RETURN youFollow.username AS name',
+                + 'RETURN youFollow',
                 params: { username: username }
             }, function (err, result) {
                 if(err){
@@ -107,9 +107,15 @@ routes.get('/followers', function(req,res) {
                 } else {
                     const userList = [];
                     result.forEach(user => {
-                        if(user.name != username){
-                            userList.push(user.name)
+                        const userToPush = user.youFollow.properties;
+                        if(userToPush.username != username){
+                            delete userToPush.password;
+                            userList.push(userToPush)
+
                         }
+                    });
+                    userList.sort(function(a, b) {
+                        return a.username.localeCompare(b.username);
                     });
                     res.status(200).json(userList);
                 }

@@ -49,8 +49,7 @@ routes.delete('/posts/:postid/comments/:commentid', function (req, res) {
             Post.findById(postid)
                 .then((post) => {
                     const comment = post.comments.id(commentid);
-                    console.log(comment);
-                    if(post.username === decoded.user || comment.user === decoded.user){
+                    if (post.user === decoded.user || comment.user === decoded.user){
                         comment.remove();
                         return post.save();
                     } else {
