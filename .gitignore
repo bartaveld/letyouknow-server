@@ -9,3 +9,4 @@ start-prod.sh
 .xlsx
 ~$api.xlsx
 api.xlsx
+.env
