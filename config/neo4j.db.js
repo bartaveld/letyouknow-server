@@ -1,5 +1,7 @@
 var neo4j = require('neo4j');
 
-var db = new neo4j.GraphDatabase('http://neo4j:5685zAsLUWHo@localhost:7474');
+var dbUrl = process.env.NODE_ENV === 'production' ? process.env.NEO4J : process.env.TESTNEO4J
+
+var db = new neo4j.GraphDatabase(dbUrl);
 
 module.exports = db;

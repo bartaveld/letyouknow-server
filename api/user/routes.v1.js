@@ -186,16 +186,17 @@ routes.get('/users/suggestions', function(req,res) {
                 + 'MATCH(user)-[:follows]->(youFollow)'
                 + 'MATCH(youFollow)-[:follows]->(theyFollow)'
                 + 'WHERE NOT (user)-[:follows]->(theyFollow) AND NOT (user)-[:not_interested]->(theyFollow)'
-                + 'RETURN theyFollow.username AS name LIMIT 10',
+                + 'RETURN theyFollow LIMIT 10',
                 params: { username: username }
             }, function (err, result) {
                 if(err){
                     res.status(400).json(err);
                 } else {
+
                     const userList = [];
                     result.forEach(user => {
-                        if(user.name != username){
-                            userList.push(user.name)
+                        if(user.theyFollow.properties.username != username){
+                            userList.push(user.theyFollow.properties)
                         }
                     });
                     res.status(200).json(userList);
