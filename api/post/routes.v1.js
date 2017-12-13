@@ -68,10 +68,8 @@ routes.get('/posts/followers', function(req,res) {
                 if(err){
                     res.status(400).json(err);
                 } else {
-                    if(result.length === 0){
-                        res.status(204).json();
-                    }
-                    else {
+                    const postList = [];
+                    if(result.length !== 0){
                         const userList = [];
                         result.forEach(user => {
                             if(user.name != username){
@@ -79,7 +77,6 @@ routes.get('/posts/followers', function(req,res) {
                             }
                         });
                         let findAllPosts = new Promise((resolve, reject) => {
-                            const postList = [];
                             const length = userList.length;
                             let count = 0;
                             userList.forEach(user => {
@@ -105,6 +102,20 @@ routes.get('/posts/followers', function(req,res) {
                                     res.status(400).json
                                 })
                         });
+                    }
+                    else {
+                        Post.find({ user: username })
+                        .then((posts) => {
+                            postList.push.apply(postList, posts);
+                            if(postList.length !== 0){
+                                res.status(200).json(sortArray(postList));
+                            } else {
+                                res.status(204).json();
+                            }
+                        })
+                        .catch((err) => {
+                            res.status(400).json
+                        })
                     }
                 }
             });
