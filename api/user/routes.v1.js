@@ -23,7 +23,7 @@ routes.get('/users', function( req, res ) {
 
             if(username){
                 neo4j.cypher({
-                    query: 'MATCH (user :User) WHERE user.username CONTAINS $username RETURN user',
+                    query: 'MATCH (user :User) WHERE UPPER(user.username) CONTAINS UPPER($username) RETURN user',
                     params: { username: username }
                 }, function ( err, result ) {
                     if(err){
