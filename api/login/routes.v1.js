@@ -26,7 +26,7 @@ routes.post('/login', function( req, res ) {
                 if(result[0] != undefined){
                     if( bcrypt.compareSync( password, result[0].user.properties.password ) ){
                         const user = result[0].user.properties;
-                        const token = jwt.sign({ user: username }, JWTKey, { expiresIn: '24h' });
+                        const token = jwt.sign({ user: username }, JWTKey, { expiresIn: '48h' });
                         res.status(200).json( { login: 'success', token: token, username: username
                         , firstName: user.firstName, lastName: user.lastName, imagePath: user.imagePath } );
                     } else {

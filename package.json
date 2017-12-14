@@ -1,7 +1,8 @@
 {
-  "name": "server",
+  "name": "letyouknow-server",
   "version": "1.0.0",
-  "description": "LetYouKnow server",
+  "author" : "Bart in t Veld 2112628 <bveld1@avans.nl> (http://bartintveld.com)",
+  "license": "ISC",
   "main": "server.js",
   "scripts": {
     "test": "nodemon node_modules/mocha/bin/_mocha",
@@ -14,8 +15,6 @@
     "mongoose",
     "server"
   ],
-  "author": "bartaveld",
-  "license": "ISC",
   "dependencies": {
     "bcrypt": "^1.0.3",
     "body-parser": "^1.17.2",
