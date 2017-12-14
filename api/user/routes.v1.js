@@ -186,7 +186,7 @@ routes.get('/users/suggestions', function(req,res) {
                 + 'MATCH(user)-[:follows]->(youFollow)'
                 + 'MATCH(youFollow)-[:follows]->(theyFollow)'
                 + 'WHERE NOT (user)-[:follows]->(theyFollow) AND NOT (user)-[:not_interested]->(theyFollow)'
-                + 'RETURN theyFollow LIMIT 10',
+                + 'RETURN DISTINCT theyFollow LIMIT 10',
                 params: { username: username }
             }, function (err, result) {
                 if(err){
